@@ -36,5 +36,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: my-app-linux # Name of the artifact zip file
-        path: target/release/
+        path: target/release/rathole
         if-no-files-found: error
