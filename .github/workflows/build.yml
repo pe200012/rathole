@@ -1,0 +1,40 @@
+name: Build and Upload Binary
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Setup Rust toolchain (updates to the latest stable version)
+    # If you need nightly, change 'stable' to 'nightly'
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@nightly
+      
+    - name: Cache Cargo registry and build artifacts
+      uses: Swatinem/rust-cache@v2
+
+    # 3. Build the project in release mode
+    - name: Build
+      run: cargo build --release --verbose
+
+    # 4. Upload the binary as an artifact
+    - name: Upload Binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: my-app-linux # Name of the artifact zip file
+        path: target/release/
+        if-no-files-found: error
